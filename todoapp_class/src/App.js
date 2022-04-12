@@ -55,7 +55,6 @@ class App extends Component {
 
         })
         localStorage.setItem('tasks', JSON.stringify(tasks))
-        console.log(this)
     }
     s4() {
         return Math.round((1 + Math.random()) * 0x10000).toString(16).substring(1);
@@ -101,13 +100,14 @@ class App extends Component {
         let tasks = this.state.tasks;
         let item = tasks.find((item) => item.id === id)
         item.status = !item.status
+        console.log(tasks)
         this.setState({ tasks: tasks })
         localStorage.setItem('tasks', JSON.stringify(tasks))
     }
     onDelete = (id) => {
         let tasks = this.state.tasks;
-        let item = tasks.find((item) => item.id === id)
-        tasks.splice(item.index, 1)
+        let index = tasks.findIndex(t => t.id === id);
+        tasks.splice(index, 1)
         this.setState({ tasks: tasks })
         localStorage.setItem('tasks', JSON.stringify(tasks))
     }
