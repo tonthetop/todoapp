@@ -1,7 +1,6 @@
 import React from 'react';
 import TaskItem from './TaskItem'
-import {connect} from 'react-redux'
-import * as actions from '../actions'
+import { connect } from 'react-redux'
 class Tasklist extends React.Component {
     constructor(props) {
         super(props)
@@ -14,29 +13,62 @@ class Tasklist extends React.Component {
         const target = e.target
         const name = target.name
         const value = target.value
-        this.props.onFilter1({
-            ...this.state, [name]: value
-        })
-        this.setState({
-            [name]: value
-        })
+        this.setState({ [name]: value })
+
     }
+
     render() {
+        let { tasks,keySearch,sort } = this.props
+        const { filterName } = this.state
+        let filterStatus = parseInt(this.state.filterStatus,10)
+        //Search
+        if (keySearch) {
+            tasks = tasks.filter(item => {
+                return item.name.toLowerCase().indexOf(keySearch.toLowerCase()) !== -1
+            })
+        }
+        //Filter
+        if (filterName !== '') {
+            tasks = tasks.filter(item => {
+                return item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+            })
 
+        }
+        if (filterStatus !== -1) {
+            tasks = tasks.filter(item => {
+                return item.status == filterStatus
+            })
+            console.log(tasks)
 
-        var taskList = this.props.tasks
-        var { filterStatus, filterName } = this.state
-        var elementList = taskList.map((item, index) => (
+        }
+        //Sort
+        if (sort) {
+            if (sort.type === 'name') {
+                tasks.sort((a, b) => {
+                    if (a.name > b.name) return sort.value
+                    else if (a.name < b.name) return -sort.value
+                    return 0
+                })
+            }
+            if (sort.type === 'status') {
+                tasks.sort((a, b) => {
+                    if (a.status > b.status) return -sort.value
+                    else if (a.status < b.status) return sort.value
+                    return 0
+                })
+            }
+        }
+        //TaskItem
+        var elementList = tasks.map((item, index) => (
             <TaskItem
                 key={item.id}
                 value={item}
                 index={index + 1}
-                onUpdate2={this.props.onUpdate1}
             >
 
             </TaskItem>
         ))
-
+        //Render
         return (
 
             <table className="table table-bordered table-hover">
@@ -83,16 +115,15 @@ class Tasklist extends React.Component {
     }
 }
 
- const mapStateToProps = (state)=>{
-     return { 
-         tasks:state.tasks
-     }
- }
- const mapDispatchToProps = (dispatch,props) =>{
-    return { 
-        onListAll: ()=>{
-            dispatch(actions.listAll())
-        }
+const mapStateToProps = (state) => {
+    return {
+        tasks: state.tasks,
+        keySearch: state.searchByName?state.searchByName.name:null, 
+        sort:state.sort
     }
 }
-export default connect(mapStateToProps,null)(Tasklist)
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Tasklist)

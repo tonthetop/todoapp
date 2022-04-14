@@ -12,27 +12,38 @@ class Taskform extends React.Component {
         }
     }
 
-    componentWillMount() {
-        let task = this.props.task
-        if (task) this.setState({
-            id: task.id, name: task.name, status: task.status
-        })
-    }
+    componentDidMount() {
+        const task = this.props.taskEditing
+        if (Object.keys(task).length > 0) {
+            this.setState({
+                id: task.id,
+                name: task.name,
+                state: task.status
+            })
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps && nextProps.task) {
-            this.setState({
-                id: nextProps.task.id, name: nextProps.task.name, status: nextProps.task.status
-            })
-        } else if (nextProps && nextProps.task === null) {
-            this.setState({
-                id: '',
-                name: '',
-                status: false
-            })
+        } else {
+            this.onClear()
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+         const task = nextProps.taskEditing
+         console.log('receive props: ',task)
+        if (nextProps && Object.keys(task).length > 0) {
+            this.setState({
+                id: task.id, name: task.name, status: task.status
+            })
+        } else {
+            this.onClear()
+        }
+    }
+    onClear() {
+        this.setState({
+            id: '',
+            name: '',
+            status: false
+        })
+    }
     onChange = (e) => {
 
         var target = e.target;
@@ -45,17 +56,20 @@ class Taskform extends React.Component {
     onSubmit = (e) => {
         e.preventDefault();
         var itemWillAdded = { id: this.state.id, name: this.state.name, status: this.state.status === 'true' ? true : false }
-        // this.props.onSubmit()
-        this.props.onAddTask(itemWillAdded)
+        console.log(itemWillAdded);
+        this.props.onSaveTask(itemWillAdded)
         this.props.onCloseForm()
     }
 
     render() {
+        const { taskEditing } = this.props
+        const isHasNOProperty = Object.keys(taskEditing).length === 0
+        if (!this.props.isDisplayForm) return ''
         return (
             <div className="panel panel-warning">
                 <div className="panel-heading">
                     <h3 className="panel-title">
-                        {this.state.id === '' ? "Thêm Công Việc" : "Sửa công việc"}
+                        {isHasNOProperty ? "Thêm Công Việc" : "Sửa công việc"}
                         <span className="fa fa-times-circle text-right" onClick={this.props.onCloseForm}>
                         </span>
                     </h3>
@@ -99,12 +113,19 @@ class Taskform extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
-    return {}
+    return {
+        isDisplayForm: state.isDisplayForm,
+        taskEditing: state.taskEditing
+
+    }
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        onAddTask: (task) => {
-            dispatch(actions.addTask(task))
+        onSaveTask: (task) => {
+            dispatch(actions.saveTask(task))
+        },
+        onOpenForm: () => {
+            dispatch(actions.openForm())
         },
         onCloseForm: () => {
             dispatch(actions.closeForm())

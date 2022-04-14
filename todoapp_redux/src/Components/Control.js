@@ -6,16 +6,8 @@ class Control extends React.Component {
         return (
 
             <div className="row mt-15">
-                {/* search */}
-                <Search
-                    onSearch2={this.props.onSearch1}
-                ></Search>
-                {/* sort */}
-                <Sort
-                    onSort2={this.props.onSort1}
-
-                ></Sort>
-
+                <Search></Search>
+                <Sort></Sort>
             </div>
         )
     }

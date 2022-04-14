@@ -1,19 +1,20 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
+import * as actions from '../actions'
 class Search extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            keywords: ''
+        this.state={
+            name:''
         }
     }
-    onChange = (event) => {
-        this.setState({ keywords: event.target.value })
-    };
+    onChange=(e)=>{
+        this.setState({name:e.target.value})
+    }
     onSubmit = (e) => {
         e.preventDefault()
-        this.props.onSearch2(this.state.keywords)
+        this.props.onSearch(this.state.name)
     }
     render() {
         return (
@@ -25,6 +26,7 @@ class Search extends React.Component {
                             type="text"
                             className="form-control"
                             placeholder="Nhập từ khóa..."
+                            value={this.state.name}
                             onChange={this.onChange}
                         />
                         <span className="input-group-btn">
@@ -42,4 +44,16 @@ class Search extends React.Component {
         )
     }
 }
-export default Search
+
+const mapStateToProps = (state) => {
+    return {
+    }
+}
+const mapDispatchToProps=(dispatch) => {
+    return {
+        onSearch:(name)=>{
+            dispatch(actions.searchByName(name))
+        }
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Search)

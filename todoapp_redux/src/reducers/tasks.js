@@ -12,22 +12,28 @@ var generateID = () => {
     return `${s4()}-${s4()}-${s4()}-${s4()}-${s4()}`;
 };
 var myReducer = (state = initialState, action) => {
-    var id = null;
-
+    var index = null;
+    var task = {}
     switch (action.type) {
-        case types.LIST_ALL:
-            return [...state];
-        case types.ADD_TASK:
-            var newTask = {
-                id: generateID(),
+        case types.SAVE_TASK:
+            if (action.task.id === '') {
+                task = {
+                    id: generateID(),
+                    name: action.task.name,
+                    status: action.task.status,
+                };
+                state.push(task);
+            }
+            index = state.findIndex(e => e.id === action.task.id)
+            state[index] = {
+                ...state[index],
                 name: action.task.name,
-                status: action.task.status,
-            };
-            state.push(newTask);
+                status: action.task.status
+            }
             localStorage.setItem("tasks", JSON.stringify(state));
             return [...state];
         case types.GENERATE_TASK:
-            if (state.length === 0) {
+            if (!state.length) {
                 const tasks = [{
                         id: generateID(),
                         name: "Diboi1",
@@ -47,23 +53,24 @@ var myReducer = (state = initialState, action) => {
                 localStorage.setItem("tasks", JSON.stringify(tasks));
                 return [...tasks];
             }
+            return [...state]
         case types.UPDATE_STATUS:
-            // id = state.findIndex((e) => e.id === action.id);
-            // state[id] = {
-            //     ...state[id],
-            //     status: !state[id].status
-            // }
-            // localStorage.setItem("tasks", JSON.stringify(state));
-            // return [...state]
+            index = state.findIndex((e) => e.id === action.id);
+            state[index] = {
+                ...state[index],
+                status: !state[index].status
+            }
+            localStorage.setItem("tasks", JSON.stringify(state));
+            return [...state]
 
-            let stateAnother = JSON.parse(JSON.stringify(state));
-            let item = stateAnother.find((e) => e.id === action.id);
-            item.status = !item.status
-            localStorage.setItem("tasks", JSON.stringify(stateAnother));
-            return stateAnother;
+            // let stateAnother = JSON.parse(JSON.stringify(state));
+            // let item = stateAnother.find((e) => e.id === action.id);
+            // item.status = !item.status
+            // localStorage.setItem("tasks", JSON.stringify(stateAnother));
+            // return stateAnother;
         case types.DELETE_TASK:
-            id = state.findIndex((item) => item.id === action.id)
-            state.splice(id, 1)
+            index = state.findIndex((item) => item.id === action.id)
+            state.splice(index, 1)
             localStorage.setItem('tasks', JSON.stringify(state))
             return [...state]
         default:

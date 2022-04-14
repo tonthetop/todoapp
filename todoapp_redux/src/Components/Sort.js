@@ -1,26 +1,28 @@
 import React from 'react';
-
+import { connect } from 'react-redux'
+import * as actions from '../actions'
 class Sort extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             sort: {
                 type: '',
-                value: ''
-
+                value: null
             }
         }
 
     }
     onClick = (type, value) => {
-        this.props.onSort2(type, value)
+        this.props.onSort(
+            { type: type, value: value }
+        )
         this.setState({
             sort: { type: type, value: value }
         })
     }
     render() {
         var { sort } = this.state
-        var elmIcon=(<i className="fa fa-check"></i>)
+        var elmIcon = (<i className="fa fa-check"></i>)
 
         return (
             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -35,7 +37,7 @@ class Sort extends React.Component {
                                 <span className="fa fa-sort-alpha-asc pr-5">
                                     Tên A-Z
                                 </span>
-                                {sort.type==='name' && sort.value===1?elmIcon:''}
+                                {sort.type === 'name' && sort.value === 1 ? elmIcon : ''}
                             </a>
                         </li>
                         <li onClick={() => this.onClick('name', -1)}>
@@ -45,7 +47,7 @@ class Sort extends React.Component {
                                 <span className="fa fa-sort-alpha-desc pr-5">
                                     Tên Z-A
                                 </span>
-                                {sort.type==='name' && sort.value===-1?elmIcon:''}
+                                {sort.type === 'name' && sort.value === -1 ? elmIcon : ''}
 
                             </a>
                         </li>
@@ -55,7 +57,7 @@ class Sort extends React.Component {
                                 role="button"
                             >
                                 Trạng Thái Kích Hoạt
-                                {sort.type==='status' && sort.value===1?elmIcon:''}
+                                {sort.type === 'status' && sort.value === 1 ? elmIcon : ''}
                             </a>
                         </li>
                         <li onClick={() => this.onClick('status', -1)}>
@@ -63,7 +65,7 @@ class Sort extends React.Component {
                                 role="button"
                             >
                                 Trạng Thái Ẩn
-                                {sort.type==='status' && sort.value===-1?elmIcon:''}
+                                {sort.type === 'status' && sort.value === -1 ? elmIcon : ''}
                             </a>
                         </li>
                     </ul>
@@ -71,6 +73,15 @@ class Sort extends React.Component {
             </div>
         )
     }
-
 }
-export default Sort
+const mapStateToProps = (state) => {
+    return {}
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSort: (sort) => {
+            dispatch(actions.sort(sort))
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Sort)

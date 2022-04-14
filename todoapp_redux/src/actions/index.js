@@ -1,12 +1,8 @@
-import { type } from "@testing-library/user-event/dist/type";
 import * as types from "../constants/actionTypes";
-export const listAll = () => {
-    return { type: types.LIST_ALL };
-};
 
-export const addTask = (task) => {
+export const saveTask = (task) => {
     return {
-        type: types.ADD_TASK,
+        type: types.SAVE_TASK,
         task: task,
     };
 };
@@ -37,5 +33,30 @@ export const deleteTask = (id) => {
     return {
         type: types.DELETE_TASK,
         id: id
+    }
+}
+export const editTask = (task) => {
+    return {
+        type: types.EDIT_TASK,
+        task: task
+    }
+}
+export const resetItemEditting = () => {
+    return {
+        type: types.RESET_ITEM_EDITING
+    }
+
+}
+
+export const searchByName = (keyName) => {
+    return {
+        type: types.SEARCH_BY_NAME,
+        name: keyName
+    }
+}
+export const sort = (sort) => {
+    return {
+        type: types.SORT,
+        sort: sort
     }
 }
