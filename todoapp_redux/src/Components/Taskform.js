@@ -25,17 +25,31 @@ class Taskform extends React.Component {
             this.onClear()
         }
     }
-
-    componentWillReceiveProps(nextProps) {
-         const task = nextProps.taskEditing
-         console.log('receive props: ',task)
+    static getDerivedStateFromProps(nextProps, state) {
+        const task = nextProps.taskEditing
         if (nextProps && Object.keys(task).length > 0) {
-            this.setState({
-                id: task.id, name: task.name, status: task.status
-            })
+            return task
         } else {
-            this.onClear()
+            return null
         }
+    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log(nextProps)
+    //     const task = nextProps.taskEditing
+    //     console.log('receive props: ', task)
+    //     if (nextProps && Object.keys(task).length > 0) {
+    //         this.setState({
+    //             id: task.id, name: task.name, status: task.status
+    //         })
+    //     } else {
+    //         this.onClear()
+    //     }
+    // }
+    
+    componentDidUpdate(prevProps){
+        console.log(prevProps.taskEditing)
+        console.log(this.props.taskEditing)
+        console.log(this.state)
     }
     onClear() {
         this.setState({
@@ -119,6 +133,7 @@ const mapStateToProps = (state) => {
 
     }
 }
+
 const mapDispatchToProps = (dispatch, props) => {
     return {
         onSaveTask: (task) => {
